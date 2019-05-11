@@ -1,5 +1,6 @@
 var webpack = require('webpack')
 var merge = require('webpack-merge')
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 var base = require('./webpack.config.base')
 var path = require('path')
 
@@ -7,6 +8,7 @@ var outputFile = '{{ name }}'
 var globalName = '{{ library }}'
 
 module.exports = merge(base, {
+  mode: 'production',
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: outputFile + '.common.js',
@@ -18,12 +20,19 @@ module.exports = merge(base, {
     // With their package name
     // Example: 'lodash': 'lodash'
   },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: true,
-      },
-      mangle: false,
-    }),
-  ],
+  optimization: {
+    minimizer: [
+      // we specify a custom UglifyJsPlugin here to get source maps in production
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          compress: false,
+          ecma: 6,
+          mangle: true,
+        },
+        sourceMap: true,
+      }),
+    ],
+  },
 })

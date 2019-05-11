@@ -6,6 +6,7 @@ var outputFile = '{{ name }}'
 var globalName = '{{ library }}'
 
 module.exports = merge(base, {
+  mode: 'development',
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: outputFile + '.common.js',
